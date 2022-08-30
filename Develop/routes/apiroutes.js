@@ -23,3 +23,37 @@ module.exports = function(app) {
       res.send(dbData);
     });
   });
+
+  // API POST Requests
+  // Below code handles when a user submits a form and thus submits data to the server.
+  // In each of the below cases, when a user submits form data (a JSON object)
+  // ...the JSON is pushed to the appropriate JavaScript array
+  // (ex. User fills out a reservation request... this data is then sent to the server...
+  // Then the server saves the data to the array)
+  // ---------------------------------------------------------------------------
+
+  // API POST Requests
+
+  app.post('/api/notes', function(req, res) {
+    const userNotes = req.body;
+
+    fs.readFile('./db/db.json', (err, data) => {
+      if (err) throw err;
+      dbData = JSON.parse(data);
+      dbData.push(userNotes);
+      let number = 1;
+      dbData.forEach((note, index) => {
+        note.id = number;
+        number++;
+        return dbData;
+      });
+      console.log(dbData);
+
+      stringData = JSON.stringify(dbData);
+
+      fs.writeFile('./db/db.json', stringData, (err, data) => {
+        if (err) throw err;
+      });
+    });
+    res.send('Thank you for your note!');
+  });
